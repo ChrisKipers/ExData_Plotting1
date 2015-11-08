@@ -4,7 +4,7 @@ source('graphing_functions.R')
 
 PlotToFile(function(data) {
   par(mfrow=c(2,2))
-  PlotMeanOfVariableAgainstTime('Global_active_power', 'Global Active Power (kilowatts)', data)
+  PlotMeanOfVariableAgainstTime('Global_active_power', 'Global Active Power', data)
   PlotMeanOfVariableAgainstTime('Voltage', 'Voltage', data)
   PlotEnergySubMetering(data)
   PlotMeanOfVariableAgainstTime('Global_reactive_power', 'Global_reactive_power', data)

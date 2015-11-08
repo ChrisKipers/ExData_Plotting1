@@ -8,6 +8,8 @@ library(lubridate)
 
 file.name.in.zip <- 'household_power_consumption.txt'
 file.url <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+# If the file does not exist, download the file and unzip it into the current
+# directory with the file name 'household_power_consumption.txt".
 if (!file.exists(file.name.in.zip)) {
   temp <- tempfile()
   download.file(file.url, temp)
@@ -15,10 +17,13 @@ if (!file.exists(file.name.in.zip)) {
   unlink(temp)
 }
 
+# The dates of the observations we want to analyze.
 target.dates <- c(mdy('2/2/2007'), mdy('2/1/2007'))
+
 raw.household.power.consumption <- read.csv('household_power_consumption.txt',
                                             sep = ';',
                                             na.strings = '?')
+
 tidy.household.power.consumption <- raw.household.power.consumption %>%
   mutate(Date_Time = dmy_hms(paste(Date, Time)),
          Date = dmy(Date), Time = hms(Time),
@@ -30,4 +35,5 @@ tidy.household.power.consumption <- raw.household.power.consumption %>%
          Voltage = as.numeric(Voltage)) %>%
   filter(Date %in% target.dates)
 
+# Remove the raw data.
 rm(raw.household.power.consumption)
