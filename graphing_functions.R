@@ -1,26 +1,45 @@
+# Functions used to plot different graphs of the household power consumption
+# data.
 library(dplyr)
 
-plot.to.file <- function(plot.function, file.name) {
-  if (!exists("tidy.household.power.consumption")) {
-    source("tidy_data.R")
+PlotToFile <- function(plot.function, file.name) {
+  # Invokes a plotting function with the household power consumption data
+  # in the context of the file to which the plot will be drawn.
+  #
+  # Args:
+  #   plot.function: Function that will plot the household power consumption data
+  #   file.name: The name of the png file that the plot will be drawn to
+  
+  # Ensure data is available 
+  if (!exists('tidy.household.power.consumption')) {
+    source('tidy_data.R')
   }
   
-  png(file.name, width=480, height=480)
+  png(file.name, width = 480, height = 480)
   plot.function(tidy.household.power.consumption)
   dev.off()
 }
 
-plot.global.active.power.hist <- function(household.power.data) {
+PlotGlobalActivePowerHist <- function(household.power.data) {
+  # Plots a red histogram of the Global Active Power
+  # Args:
+  #   household.power.data: The tidy household power data
   global.active.power.in.kilowatts <- household.power.data$Global_active_power
-  color <- "red"
-  xlabel <- "Global Active Power (kilowatts)"
-  main.label <- "Global Active Power"
+  color <- 'red'
+  xlabel <- 'Global Active Power (kilowatts)'
+  main.label <- 'Global Active Power'
   hist(global.active.power.in.kilowatts, col = color, xlab = xlabel, main = main.label)
 }
 
 
-plot.energe.sub.metering <- function(household.power.data) {
-  household.power.consumption.grouped.by.date.time <- group_by(household.power.data, Date_Time)
+PlotEnergySubMetering <- function(household.power.data) {
+  # Plots a line graph of Sub_metering_1, Sub_metering_2, and Submetering_4
+  # against time.
+  # Args:
+  #   household.power.data: The tidy household power data
+  household.power.consumption.grouped.by.date.time <-
+    group_by(household.power.data, Date_Time)
+  
   mean.sub.metering.grouped.by.date.time <-
     summarize(
       household.power.consumption.grouped.by.date.time,
@@ -28,30 +47,41 @@ plot.energe.sub.metering <- function(household.power.data) {
       mean_sub_metering_2 = mean(Sub_metering_2, na.rm = T),
       mean_sub_metering_3 = mean(Sub_metering_3, na.rm = T))
   
-  times = mean.sub.metering.grouped.by.date.time$Date_Time
+  times <- mean.sub.metering.grouped.by.date.time$Date_Time
   
-  ylabel <- "Energy sub metering"
-  xlabel <- ""
-  max_mean = max(c(mean.sub.metering.grouped.by.date.time$mean_sub_metering_1,
+  ylabel <- 'Energy sub metering'
+  xlabel <- ''
+  max_mean <- max(c(mean.sub.metering.grouped.by.date.time$mean_sub_metering_1,
                    mean.sub.metering.grouped.by.date.time$mean_sub_metering_2,
                    mean.sub.metering.grouped.by.date.time$mean_sub_metering_3), na.rm = T)
   
-  plot(times, seq_along(times), type = "n", ylab = ylabel, xlab = xlabel, ylim = c(0, max_mean))
+  plot(times, seq_along(times), type = 'n', ylab = ylabel, xlab = xlabel, ylim = c(0, max_mean))
   lines(times, mean.sub.metering.grouped.by.date.time$mean_sub_metering_1)
-  lines(times,mean.sub.metering.grouped.by.date.time$mean_sub_metering_2, col="red")
-  lines(times,mean.sub.metering.grouped.by.date.time$mean_sub_metering_3, col="blue")
+  lines(times,mean.sub.metering.grouped.by.date.time$mean_sub_metering_2, col = 'red')
+  lines(times,mean.sub.metering.grouped.by.date.time$mean_sub_metering_3, col = 'blue')
   
   legend(
-    "topright",
-    c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"),
+    'topright',
+    c('Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3'),
     lty = 1,
     lwd = 2.5,
-    col=c("black", "red", "blue"),
-    cex = .75)
+    col = c('black', 'red', 'blue'),
+    cex = 0.75)
 }
 
-plot.mean.of.variable.against.time <- function(var.key, var.label, data, xlab = "") {
-  variable.summary = aggregate(data[[var.key]], by=list(data$Date_Time), FUN=mean)
-  plot(variable.summary$Group.1, variable.summary$x, type="n", ylab = var.label, xlab = xlab)
+PlotMeanOfVariableAgainstTime <- function(var.key, var.label, data, xlab = '') {
+  # Plots a variable of the data against the Date_time varabile of the data.
+  # Args:
+  #   var.key: The name of the variable
+  #   var.label: The label for the variable
+  #   data: The data to use for the graph
+  #   xlab: The x label for the graph
+  variable.summary <-
+    aggregate(data[[var.key]], by=list(data$Date_Time), FUN=mean)
+  plot(variable.summary$Group.1,
+       variable.summary$x,
+       type='n',
+       ylab = var.label,
+       xlab = xlab)
   lines(variable.summary$Group.1, variable.summary$x)
 }

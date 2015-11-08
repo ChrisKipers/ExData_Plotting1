@@ -1,3 +1,5 @@
+# Plots the Energy Sub Metering against time graph to plot3.png.
+
 source("graphing_functions.R")
 
-plot.to.file(plot.energe.sub.metering, 'plot3.png')
+PlotToFile(PlotEnergySubMetering, 'plot3.png')

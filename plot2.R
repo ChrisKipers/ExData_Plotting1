@@ -1,5 +1,9 @@
-source("graphing_functions.R")
+# Plots the Global active power against time to plot2.png
 
-plot.to.file(function(data) {
-  plot.mean.of.variable.against.time("Global_active_power", "Global Active Power (kilowatts)", data)
+source('graphing_functions.R')
+
+PlotToFile(function(data) {
+  PlotMeanOfVariableAgainstTime('Global_active_power',
+                                'Global Active Power (kilowatts)',
+                                data)
 }, 'plot2.png')

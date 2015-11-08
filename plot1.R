@@ -1,3 +1,5 @@
-source("graphing_functions.R")
+# Plots the Global Active Power Histogram to plot1.png.
 
-plot.to.file(plot.global.active.power.hist, 'plot1.png')
+source('graphing_functions.R')
+
+PlotToFile(PlotGlobalActivePowerHist, 'plot1.png')
